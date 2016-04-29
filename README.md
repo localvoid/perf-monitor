@@ -12,7 +12,7 @@ Performance monitor. Simple UI component that helps you measure performance.
 <body>
   <script src="http://localvoid.github.io/perf-monitor/0.1/perf-monitor.js"></script>
   <script>
-    // initProfile will create a new monitor component and inject it into your
+    // initProfiler will create a new monitor component and inject it into your
     // document.
     perfMonitor.initProfiler('a');
     perfMonitor.initProfiler('b');
@@ -53,7 +53,7 @@ Npm package `perf-monitor` provides standard commonjs module, es6 modules at
 
 ## API
 
-#### `initPerfMonitor(options: PerfMonitorOptions) => void`
+#### `initPerfMonitor(options: PerfMonitorOptions) : void`
 
 Initialize performance monitor. If perf monitor isn't initialized with this
 function, it will use default options.
@@ -62,22 +62,22 @@ Options:
 
  - `container: HTMLElement` set container
 
-#### `startFPSMonitor() => void`
+#### `startFPSMonitor() : void`
 
 Add FPS monitor.
 
-#### `startMemMonitor() => void`
+#### `startMemMonitor() : void`
 
 Add Memory Monitor if browser supports `window.performance.memory`.
 
-#### `initProfiler(name: string) => void`
+#### `initProfiler(name: string) : void`
 
 Add new code profiler monitor.
 
-#### `startProfile(name: string) => void`
+#### `startProfile(name: string) : void`
 
 Save start time of the profiled code.
 
-#### `endProfile(name: string) => void`
+#### `endProfile(name: string) : void`
 
 Measure time between the start of the profiled code and the current time.
