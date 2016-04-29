@@ -1,0 +1,36 @@
+{
+  "name": "perf-monitor",
+  "main": "dist/cjs/index.js",
+  "jsnext:main": "dist/es6/index.js",
+  "typings": "dist/typings/index.d.ts",
+  "version": "0.1.0",
+  "description": "Performance Monitor",
+  "license": "MIT",
+  "author": {
+    "name": "Boris Kaul",
+    "email": "localvoid@gmail.com",
+    "url": "https://github.com/localvoid"
+  },
+  "keywords": [
+    "browser",
+    "performance",
+    "monitor"
+  ],
+  "homepage": "https://github.com/localvoid/perf-monitor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/localvoid/perf-monitor"
+  },
+  "bugs": {
+    "url": "https://github.com/localvoid/perf-monitor/issues"
+  },
+  "github": "https://github.com/localvoid/perf-monitor",
+  "dependencies": {},
+  "devDependencies": {
+    "del": "^2.2.0",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^2.13.0",
+    "merge2": "^1.0.2",
+    "typescript": "^1.8.10"
+  }
+}
