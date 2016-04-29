@@ -191,8 +191,6 @@ class MonitorWidget {
     const result = this.results[this.results.length - 1];
     const scale = MONITOR_GRAPH_HEIGHT / (result.max * 1.2);
 
-    console.log(this.flags);
-
     this.text.innerHTML = '' +
       ((this.flags & MonitorFlags.HideMin) === 0 ? `<div>min: &nbsp;${result.mean.toFixed(2)}${this.unitName}</div>` : '') +
       ((this.flags & MonitorFlags.HideMax) === 0 ? `<div>max: &nbsp;${result.max.toFixed(2)}${this.unitName}</div>` : '') +
@@ -262,6 +260,8 @@ interface ChromePerformance {
  * Start Memory Monitor
  */
 export function startMemMonitor() : void {
+  checkInit();
+
   if ((performance as any).memory !== void 0) {
     const data = new Data();
     const w = new MonitorWidget('Memory', 'MB', MonitorFlags.HideMin | MonitorFlags.HideMean);
@@ -315,6 +315,8 @@ export function endProfile(name: string) : void {
  * Initialize profiler and insert into container
  */
 export function initProfiler(name: string) : void {
+  checkInit();
+
   let profiler = profilerInstances[name];
   if (profiler === void 0) {
     profilerInstances[name] = profiler = new Profiler(name, 'ms');

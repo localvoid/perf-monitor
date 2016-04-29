@@ -1,47 +1,55 @@
 Performance monitor. Simple UI component that helps you measure performance.
 [Demo](http://localvoid.github.io/kivi-dbmonster/)
 
-## Getting Started
+## Example
 
-Install `perf-monitor` package.
+```html
+<!doctype html>
+<html>
+<head>
+  <title>perf monitor example</title>
+</head>
+<body>
+  <script src="http://localvoid.github.io/perf-monitor/0.1/perf-monitor.js"></script>
+  <script>
+    // initProfile will create a new monitor component and inject it into your
+    // document.
+    perfMonitor.initProfiler('a');
+    perfMonitor.initProfiler('b');
 
-```sh
-npm install --save perf-monitor
+    function tick() {
+      // save start time of the profiled code
+      perfMonitor.startProfile('a');
+      let a = Math.random();
+      for (let i = 0; i < 100; i++) {
+        a += Math.random();
+      }
+      // measure time between the start of the profiled code and the current time
+      perfMonitor.endProfile('a');
+
+      perfMonitor.startProfile('b');
+      let b = Math.random();
+      for (let i = 0; i < 100; i++) {
+        b *= Math.random();
+      }
+      perfMonitor.endProfile('b');
+
+      console.log(a);
+      console.log(b);
+
+      setTimeout(tick, 30);
+    }
+
+    setTimeout(tick, 30);
+  </script>
+</body>
+</html>
 ```
 
-Import dependencies and start profiling.
+## NPM Package
 
-```js
-import {initProfiler, startProfile, endProfiler} from 'perf-monitor';
-
-// initProfile will create a new monitor component and inject it into your
-// document.
-initProfiler('a');
-initProfiler('b');
-
-function handleFrame() {
-  // save start time of the profiled code
-  startProfile('a');
-  let a = 0;
-  for (let i = 0; i < 100; i++) {
-    a += Math.random();
-  }
-  // measure time between the start of the profiled code and the current time
-  endProfile('a');
-
-  startProfile('b');
-  let b = 0;
-  for (let i = 0; i < 100; i++) {
-    b *= Math.random();
-  }
-  endProfile('b');
-
-  console.log(a);
-  console.log(b);
-}
-
-requestAnimationFrame(handleFrame);
-```
+Npm package `perf-monitor` provides standard commonjs module, es6 modules at
+`jsnext:main` and TypeScript typings.
 
 ## API
 

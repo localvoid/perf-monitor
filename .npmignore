@@ -1,3 +1,5 @@
+.public
+
 .gitignore
 gulpfile.js
 tsconfig.json
@@ -5,3 +7,4 @@ tsconfig.json
 .DS_Store
 .idea
 .vscode
+.publish
