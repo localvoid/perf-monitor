@@ -32,7 +32,7 @@ export function initPerfMonitor(options: PerfMonitorOptions) : void {
 /**
  * Monitor Flags
  */
-export enum MonitorFlags {
+const enum MonitorFlags {
   HideMin   = 1,
   HideMax   = 1 << 1,
   HideMean  = 1 << 2,
@@ -191,6 +191,8 @@ class MonitorWidget {
     const result = this.results[this.results.length - 1];
     const scale = MONITOR_GRAPH_HEIGHT / (result.max * 1.2);
 
+    console.log(this.flags);
+
     this.text.innerHTML = '' +
       ((this.flags & MonitorFlags.HideMin) === 0 ? `<div>min: &nbsp;${result.mean.toFixed(2)}${this.unitName}</div>` : '') +
       ((this.flags & MonitorFlags.HideMax) === 0 ? `<div>max: &nbsp;${result.max.toFixed(2)}${this.unitName}</div>` : '') +
@@ -280,9 +282,9 @@ class Profiler {
   widget: MonitorWidget;
   startTime: number;
 
-  constructor(name: string, unitName: string, flags: number = 0) {
+  constructor(name: string, unitName: string) {
     this.data = new Data();
-    this.widget = new MonitorWidget(name, unitName, flags);
+    this.widget = new MonitorWidget(name, unitName);
     this.startTime = 0;
   }
 }
@@ -312,10 +314,10 @@ export function endProfile(name: string) : void {
 /**
  * Initialize profiler and insert into container
  */
-export function initProfiler(name: string, flags: number = 0) : void {
+export function initProfiler(name: string) : void {
   let profiler = profilerInstances[name];
   if (profiler === void 0) {
-    profilerInstances[name] = profiler = new Profiler(name, 'ms', flags);
+    profilerInstances[name] = profiler = new Profiler(name, 'ms');
     container.appendChild(profiler.widget.element);
   }
 }

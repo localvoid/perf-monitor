@@ -1,9 +1,8 @@
-In-browser performance monitor. Simple UI component that helps you measure
-performance.
+Performance monitor. Simple UI component that helps you measure performance.
 
 ## Getting Started
 
-Install perf-monitor package.
+Install `perf-monitor` package.
 
 ```sh
 npm install --save perf-monitor
@@ -62,17 +61,9 @@ Add FPS monitor.
 
 Add Memory Monitor if browser supports `window.performance.memory`.
 
-#### `initProfiler(name: string, flags: number = 0) => void`
+#### `initProfiler(name: string) => void`
 
 Add new code profiler monitor.
-
-Flags:
-
-- `MonitorFlags.HideMin` hides min value
-- `MonitorFlags.HideMax` hides max value
-- `MonitorFlags.HideMean` hides mean value
-- `MonitorFlags.HideNow` hides now value
-- `MonitorFlags.HideGraph` hides graph
 
 ### `startProfile(name: string) => void`
 
