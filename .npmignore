@@ -1,7 +1,0 @@
-.gitignore
-gulpfile.js
-tsconfig.json
-
-.DS_Store
-.idea
-.vscode
