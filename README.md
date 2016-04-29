@@ -74,10 +74,10 @@ Add Memory Monitor if browser supports `window.performance.memory`.
 
 Add new code profiler monitor.
 
-### `startProfile(name: string) => void`
+#### `startProfile(name: string) => void`
 
 Save start time of the profiled code.
 
-### `endProfile(name: string) => void`
+#### `endProfile(name: string) => void`
 
 Measure time between the start of the profiled code and the current time.
