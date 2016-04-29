@@ -177,6 +177,7 @@
      * Start Memory Monitor
      */
     function startMemMonitor() {
+        checkInit();
         if (performance.memory !== void 0) {
             const data = new Data();
             const w = new MonitorWidget('Memory', 'MB', 1 /* HideMin */ | 4 /* HideMean */);
@@ -216,6 +217,7 @@
      * Initialize profiler and insert into container
      */
     function initProfiler(name) {
+        checkInit();
         let profiler = profilerInstances[name];
         if (profiler === void 0) {
             profilerInstances[name] = profiler = new Profiler(name, 'ms');
