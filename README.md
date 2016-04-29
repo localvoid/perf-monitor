@@ -1,4 +1,5 @@
 Performance monitor. Simple UI component that helps you measure performance.
+[Demo](http://localvoid.github.io/kivi-dbmonster/)
 
 ## Getting Started
 
