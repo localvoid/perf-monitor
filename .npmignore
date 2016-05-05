@@ -1,8 +1,8 @@
-.public
-
 .gitignore
 gulpfile.js
 tsconfig.json
+.babelrc
+public
 
 .DS_Store
 .idea

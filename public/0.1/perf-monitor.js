@@ -138,7 +138,11 @@
             this._syncView = function () {
                 var result = _this.results[_this.results.length - 1];
                 var scale = MONITOR_GRAPH_HEIGHT / (result.max * 1.2);
-                _this.text.innerHTML = '' + ((_this.flags & 1 /* HideMin */) === 0 ? '<div>min: &nbsp;' + result.mean.toFixed(2) + _this.unitName + '</div>' : '') + ((_this.flags & 2 /* HideMax */) === 0 ? '<div>max: &nbsp;' + result.max.toFixed(2) + _this.unitName + '</div>' : '') + ((_this.flags & 4 /* HideMean */) === 0 ? '<div>mean: ' + result.mean.toFixed(2) + _this.unitName + '</div>' : '') + ((_this.flags & 8 /* HideNow */) === 0 ? '<div>now: &nbsp;' + result.now.toFixed(2) + _this.unitName + '</div>' : '');
+                var min = (_this.flags & 32 /* RoundValues */) === 0 ? result.min.toFixed(2) : "" + Math.round(result.min);
+                var max = (_this.flags & 32 /* RoundValues */) === 0 ? result.max.toFixed(2) : "" + Math.round(result.max);
+                var mean = (_this.flags & 32 /* RoundValues */) === 0 ? result.mean.toFixed(2) : "" + Math.round(result.mean);
+                var now = (_this.flags & 32 /* RoundValues */) === 0 ? result.now.toFixed(2) : "" + Math.round(result.now);
+                _this.text.innerHTML = '' + ((_this.flags & 1 /* HideMin */) === 0 ? '<div>min: &nbsp;' + min + _this.unitName + '</div>' : '') + ((_this.flags & 2 /* HideMax */) === 0 ? '<div>max: &nbsp;' + max + _this.unitName + '</div>' : '') + ((_this.flags & 4 /* HideMean */) === 0 ? '<div>mean: ' + mean + _this.unitName + '</div>' : '') + ((_this.flags & 8 /* HideNow */) === 0 ? '<div>now: &nbsp;' + now + _this.unitName + '</div>' : '');
                 if ((_this.flags & 16 /* HideGraph */) === 0) {
                     _this.ctx.fillStyle = '#010';
                     _this.ctx.fillRect(0, 0, MONITOR_GRAPH_WIDTH, MONITOR_GRAPH_HEIGHT);
@@ -203,7 +207,7 @@
     function startFPSMonitor() {
         checkInit();
         var data = new Data();
-        var w = new MonitorWidget('FPS', 'fps', 2 /* HideMax */ | 1 /* HideMin */ | 4 /* HideMean */);
+        var w = new MonitorWidget('FPS', '', 2 /* HideMax */ | 1 /* HideMin */ | 4 /* HideMean */ | 32 /* RoundValues */);
         container.appendChild(w.element);
         var samples = [];
         var last = 0;

@@ -33,11 +33,12 @@ export function initPerfMonitor(options: PerfMonitorOptions) : void {
  * Monitor Flags
  */
 const enum MonitorFlags {
-  HideMin   = 1,
-  HideMax   = 1 << 1,
-  HideMean  = 1 << 2,
-  HideNow   = 1 << 3,
-  HideGraph = 1 << 4,
+  HideMin     = 1,
+  HideMax     = 1 << 1,
+  HideMean    = 1 << 2,
+  HideNow     = 1 << 3,
+  HideGraph   = 1 << 4,
+  RoundValues = 1 << 5,
 }
 
 /**
@@ -191,11 +192,16 @@ class MonitorWidget {
     const result = this.results[this.results.length - 1];
     const scale = MONITOR_GRAPH_HEIGHT / (result.max * 1.2);
 
+    const min = (this.flags & MonitorFlags.RoundValues) === 0 ? result.min.toFixed(2) : "" + Math.round(result.min);
+    const max = (this.flags & MonitorFlags.RoundValues) === 0 ? result.max.toFixed(2) : "" + Math.round(result.max);
+    const mean = (this.flags & MonitorFlags.RoundValues) === 0 ? result.mean.toFixed(2) : "" + Math.round(result.mean);
+    const now = (this.flags & MonitorFlags.RoundValues) === 0 ? result.now.toFixed(2) : "" + Math.round(result.now);
+
     this.text.innerHTML = '' +
-      ((this.flags & MonitorFlags.HideMin) === 0 ? `<div>min: &nbsp;${result.mean.toFixed(2)}${this.unitName}</div>` : '') +
-      ((this.flags & MonitorFlags.HideMax) === 0 ? `<div>max: &nbsp;${result.max.toFixed(2)}${this.unitName}</div>` : '') +
-      ((this.flags & MonitorFlags.HideMean) === 0 ? `<div>mean: ${result.mean.toFixed(2)}${this.unitName}</div>` : '') +
-      ((this.flags & MonitorFlags.HideNow) === 0 ? `<div>now: &nbsp;${result.now.toFixed(2)}${this.unitName}</div>` : '');
+      ((this.flags & MonitorFlags.HideMin) === 0 ? `<div>min: &nbsp;${min}${this.unitName}</div>` : '') +
+      ((this.flags & MonitorFlags.HideMax) === 0 ? `<div>max: &nbsp;${max}${this.unitName}</div>` : '') +
+      ((this.flags & MonitorFlags.HideMean) === 0 ? `<div>mean: ${mean}${this.unitName}</div>` : '') +
+      ((this.flags & MonitorFlags.HideNow) === 0 ? `<div>now: &nbsp;${now}${this.unitName}</div>` : '');
 
     if ((this.flags & MonitorFlags.HideGraph) === 0) {
       this.ctx.fillStyle = '#010';
@@ -217,7 +223,8 @@ export function startFPSMonitor() : void {
   checkInit();
 
   const data = new Data();
-  const w = new MonitorWidget('FPS', 'fps', MonitorFlags.HideMax | MonitorFlags.HideMin | MonitorFlags.HideMean);
+  const w = new MonitorWidget('FPS', '',
+    MonitorFlags.HideMax | MonitorFlags.HideMin | MonitorFlags.HideMean | MonitorFlags.RoundValues);
   container.appendChild(w.element);
 
   const samples: number[] = [];
