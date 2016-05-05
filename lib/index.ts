@@ -1,6 +1,5 @@
 const MONITOR_GRAPH_HEIGHT = 30;
 const MONITOR_GRAPH_WIDTH = 100;
-const MAX_SAMPLES = MONITOR_GRAPH_WIDTH;
 
 let container: HTMLElement = null;
 let initialized = false;
@@ -19,7 +18,7 @@ export interface PerfMonitorOptions {
 /**
  * Initialize Performance Monitor
  */
-export function initPerfMonitor(options: PerfMonitorOptions) : void {
+export function initPerfMonitor(options: PerfMonitorOptions): void {
   if (!initialized) {
     if (options.container) {
       container = options.container;
@@ -44,13 +43,13 @@ const enum MonitorFlags {
 /**
  * Check that everything is properly initialized
  */
-function checkInit() : void {
+function checkInit(): void {
   if (!container) {
-    container = document.createElement('div');
-    container.style.cssText = 'position: fixed;' +
-                              'opacity: 0.9;' +
-                              'right: 0;' +
-                              'bottom: 0';
+    container = document.createElement("div");
+    container.style.cssText = "position: fixed;" +
+                              "opacity: 0.9;" +
+                              "right: 0;" +
+                              "bottom: 0";
     document.body.appendChild(container);
   }
   initialized = true;
@@ -59,7 +58,7 @@ function checkInit() : void {
 /**
  * Schedule new task that will be executed on the next frame
  */
-function scheduleTask(task: Function) : void {
+function scheduleTask(task: Function): void {
   frameTasks.push(task);
 
   if (rafId === -1) {
@@ -100,14 +99,14 @@ class Data {
     this.maxSamples = MONITOR_GRAPH_WIDTH;
   }
 
-  addSample(v: number) : void {
+  addSample(v: number): void {
     if (this.samples.length === this.maxSamples) {
       this.samples.shift();
     }
     this.samples.push(v);
   }
 
-  calc() : Result {
+  calc(): Result {
     let min = this.samples[0];
     let max = this.samples[0];
     let sum = 0;
@@ -137,33 +136,33 @@ class MonitorWidget {
   ctx: CanvasRenderingContext2D;
   private _dirty: boolean;
 
-  constructor(name: string, unitName: string, flags: number = 0) {
+  constructor(name: string, unitName: string, flags = 0) {
     this.name = name;
     this.unitName = unitName;
     this.flags = flags;
     this.results = [];
 
-    this.element = document.createElement('div');
-    this.element.style.cssText = 'padding: 2px;' +
-                                 'background-color: #020;' +
-                                 'font-family: monospace;' +
-                                 'font-size: 12px;' +
-                                 'color: #0f0';
+    this.element = document.createElement("div");
+    this.element.style.cssText = "padding: 2px;" +
+                                 "background-color: #020;" +
+                                 "font-family: monospace;" +
+                                 "font-size: 12px;" +
+                                 "color: #0f0";
 
-    this.label = document.createElement('div');
-    this.label.style.cssText = 'text-align: center';
+    this.label = document.createElement("div");
+    this.label.style.cssText = "text-align: center";
     this.label.textContent = this.name;
-    this.text = document.createElement('div');
+    this.text = document.createElement("div");
 
     this.element.appendChild(this.label);
     this.element.appendChild(this.text);
 
     if ((flags & MonitorFlags.HideGraph) === 0) {
-      this.canvas = document.createElement('canvas');
-      this.canvas.style.cssText = 'display: block; padding: 0; margin: 0';
+      this.canvas = document.createElement("canvas");
+      this.canvas.style.cssText = "display: block; padding: 0; margin: 0";
       this.canvas.width = MONITOR_GRAPH_WIDTH;
       this.canvas.height = MONITOR_GRAPH_HEIGHT;
-      this.ctx = this.canvas.getContext('2d');
+      this.ctx = this.canvas.getContext("2d");
       this.element.appendChild(this.canvas);
     } else {
       this.canvas = null;
@@ -173,7 +172,7 @@ class MonitorWidget {
     this._dirty = false;
   }
 
-  addResult(result: Result) : void {
+  addResult(result: Result): void {
     if (this.results.length === MONITOR_GRAPH_WIDTH) {
       this.results.shift();
     }
@@ -181,7 +180,7 @@ class MonitorWidget {
     this.invalidate();
   }
 
-  invalidate() : void {
+  invalidate(): void {
     if (!this._dirty) {
       this._dirty = true;
       scheduleTask(this._syncView);
@@ -197,17 +196,17 @@ class MonitorWidget {
     const mean = (this.flags & MonitorFlags.RoundValues) === 0 ? result.mean.toFixed(2) : "" + Math.round(result.mean);
     const now = (this.flags & MonitorFlags.RoundValues) === 0 ? result.now.toFixed(2) : "" + Math.round(result.now);
 
-    this.text.innerHTML = '' +
-      ((this.flags & MonitorFlags.HideMin) === 0 ? `<div>min: &nbsp;${min}${this.unitName}</div>` : '') +
-      ((this.flags & MonitorFlags.HideMax) === 0 ? `<div>max: &nbsp;${max}${this.unitName}</div>` : '') +
-      ((this.flags & MonitorFlags.HideMean) === 0 ? `<div>mean: ${mean}${this.unitName}</div>` : '') +
-      ((this.flags & MonitorFlags.HideNow) === 0 ? `<div>now: &nbsp;${now}${this.unitName}</div>` : '');
+    this.text.innerHTML = "" +
+      ((this.flags & MonitorFlags.HideMin) === 0 ? `<div>min: &nbsp;${min}${this.unitName}</div>` : "") +
+      ((this.flags & MonitorFlags.HideMax) === 0 ? `<div>max: &nbsp;${max}${this.unitName}</div>` : "") +
+      ((this.flags & MonitorFlags.HideMean) === 0 ? `<div>mean: ${mean}${this.unitName}</div>` : "") +
+      ((this.flags & MonitorFlags.HideNow) === 0 ? `<div>now: &nbsp;${now}${this.unitName}</div>` : "");
 
     if ((this.flags & MonitorFlags.HideGraph) === 0) {
-      this.ctx.fillStyle = '#010';
+      this.ctx.fillStyle = "#010";
       this.ctx.fillRect(0, 0, MONITOR_GRAPH_WIDTH, MONITOR_GRAPH_HEIGHT);
 
-      this.ctx.fillStyle = '#0f0';
+      this.ctx.fillStyle = "#0f0";
       for (let i = 0; i < this.results.length; i++) {
         this.ctx.fillRect(i, MONITOR_GRAPH_HEIGHT, 1, -(this.results[i].now * scale));
       }
@@ -219,11 +218,11 @@ class MonitorWidget {
 /**
  * Start FPS monitor
  */
-export function startFPSMonitor() : void {
+export function startFPSMonitor(): void {
   checkInit();
 
   const data = new Data();
-  const w = new MonitorWidget('FPS', '',
+  const w = new MonitorWidget("FPS", "",
     MonitorFlags.HideMax | MonitorFlags.HideMin | MonitorFlags.HideMean | MonitorFlags.RoundValues);
   container.appendChild(w.element);
 
@@ -266,12 +265,12 @@ interface ChromePerformance {
 /**
  * Start Memory Monitor
  */
-export function startMemMonitor() : void {
+export function startMemMonitor(): void {
   checkInit();
 
   if ((performance as any).memory !== void 0) {
     const data = new Data();
-    const w = new MonitorWidget('Memory', 'MB', MonitorFlags.HideMin | MonitorFlags.HideMean);
+    const w = new MonitorWidget("Memory", "MB", MonitorFlags.HideMin | MonitorFlags.HideMean);
     container.appendChild(w.element);
     const mem = ((performance as any) as ChromePerformance).memory;
 
@@ -302,14 +301,14 @@ interface ProfilerMap {
 
 const profilerInstances: ProfilerMap = {};
 
-export function startProfile(name: string) : void {
+export function startProfile(name: string): void {
   const profiler = profilerInstances[name];
   if (profiler !== void 0) {
     profiler.startTime = performance.now();
   }
 }
 
-export function endProfile(name: string) : void {
+export function endProfile(name: string): void {
   const now = performance.now();
   const profiler = profilerInstances[name];
   if (profiler !== void 0) {
@@ -321,12 +320,12 @@ export function endProfile(name: string) : void {
 /**
  * Initialize profiler and insert into container
  */
-export function initProfiler(name: string) : void {
+export function initProfiler(name: string): void {
   checkInit();
 
   let profiler = profilerInstances[name];
   if (profiler === void 0) {
-    profilerInstances[name] = profiler = new Profiler(name, 'ms');
+    profilerInstances[name] = profiler = new Profiler(name, "ms");
     container.appendChild(profiler.widget.element);
   }
 }

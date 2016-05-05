@@ -2,6 +2,7 @@
 gulpfile.js
 tsconfig.json
 .babelrc
+tslint.json
 public
 
 .DS_Store
