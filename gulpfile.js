@@ -1,53 +1,55 @@
-var gulp = require('gulp');
-var del = require('del');
-var ts = require('gulp-typescript');
-var tsConfig = require('./tsconfig.json');
-var merge = require('merge2');
-var rollup = require('rollup');
-var babel = require('rollup-plugin-babel');
-var ghPages = require('gulp-gh-pages');
+const gulp = require("gulp");
+const del = require("del");
+const typescript = require("typescript");
+const tsConfig = require("./tsconfig.json");
+const gulpTs = require("gulp-typescript");
+const merge = require("merge2");
+const rollup = require("rollup");
 
-gulp.task('clean', del.bind(null, ['dist', 'public']));
+gulp.task("clean", del.bind(null, ["build", "dist"]));
 
-gulp.task('dist:cjs', function() {
-  return gulp.src(['lib/**/*.ts'])
-    .pipe(ts(Object.assign(tsConfig.compilerOptions, {
-      target: 'es5',
-      module: 'commonjs',
+gulp.task("build:es5", function() {
+  return gulp.src(["lib/**/*.ts"])
+    .pipe(gulpTs(Object.assign(tsConfig.compilerOptions, {
+      typescript: typescript,
+      target: "es5",
+      module: "es6",
     })))
-    .pipe(gulp.dest('dist/cjs'));
+    .pipe(gulp.dest("build/es5"));
+
 });
 
-gulp.task('dist:es6', function() {
-  var result = gulp.src(['lib/**/*.ts'])
-    .pipe(ts(Object.assign(tsConfig.compilerOptions, {
-      target: 'es6',
-      module: undefined,
+gulp.task("build:es6", function() {
+  const result = gulp.src(["lib/**/*.ts"])
+    .pipe(gulpTs(Object.assign(tsConfig.compilerOptions, {
+      typescript: typescript,
+      target: "es6",
       declaration: true,
     })));
 
   return merge([
-    result.dts.pipe(gulp.dest('dist/typings')),
-    result.js.pipe(gulp.dest('dist/es6'))
+    result.dts.pipe(gulp.dest("dist/typings")),
+    result.js.pipe(gulp.dest("build/es6"))
   ]);
 });
 
-gulp.task('dist:public', ['dist:es6'], function() {
+gulp.task("dist:umd", ["build:es5"], function() {
   return rollup.rollup({
-    entry: 'dist/es6/index.js',
-    plugins: [babel()]
-  }).then(function(bundle) {
-    return bundle.write({
-      format: 'iife',
-      dest: 'public/0.1/perf-monitor.js',
-      moduleName: 'perfMonitor',
-    });
-  });
-});
+    entry: "build/es5/perf-monitor.js",
+  }).then((bundle) => bundle.write({
+    format: "umd",
+    moduleName: "perfMonitor",
+    dest: "dist/umd/perf-monitor.js",
+  }));
+})
 
-gulp.task('dist', ['dist:cjs', 'dist:es6', 'dist:public']);
+gulp.task("dist:es6", ["build:es6"], function() {
+  return rollup.rollup({
+    entry: "build/es6/perf-monitor.js",
+  }).then((bundle) => bundle.write({
+    format: "es",
+    dest: "dist/es6/perf-monitor.js",
+  }));
+})
 
-gulp.task('deploy', ['dist:public'], function () {
-  return gulp.src('public/**/*')
-    .pipe(ghPages());
-});
+gulp.task("dist", ["dist:umd", "dist:es6"]);

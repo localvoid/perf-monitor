@@ -1,15 +1,23 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
-    "outDir": "build/cjs",
+    "target": "es6",
+    "lib": ["es6", "dom"],
+    "outDir": "build/es6",
     "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "strictNullChecks": true,
     "removeComments": false,
     "moduleResolution": "node"
   },
-  "exclude": [
-    "node_modules",
-    "dist"
+  "files": [
+    "lib/constants.ts",
+    "lib/counter.ts",
+    "lib/perf-monitor.ts",
+    "lib/samples.ts",
+    "lib/scheduler.ts",
+    "lib/widget.ts"
   ],
   "compileOnSave": false
 }

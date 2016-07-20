@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+<head>
+  <title>perf monitor example: counter</title>
+</head>
+<body>
+  <script src="../dist/umd/perf-monitor.js"></script>
+  <script>
+    perfMonitor.initCounter('a');
+    perfMonitor.initCounter('b', 1000);
+
+    function tick() {
+      perfMonitor.count('a');
+      perfMonitor.count('b');
+
+      setTimeout(tick, 30);
+    }
+
+    setTimeout(tick, 30);
+  </script>
+</body>
+</html>

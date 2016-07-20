@@ -1,9 +1,9 @@
 {
   "name": "perf-monitor",
-  "main": "dist/cjs/index.js",
-  "jsnext:main": "dist/es6/index.js",
-  "typings": "dist/typings/index.d.ts",
-  "version": "0.1.4",
+  "main": "dist/umd/perf-monitor.js",
+  "jsnext:main": "dist/es6/perf-monitor.js",
+  "typings": "dist/typings/perf-monitor.d.ts",
+  "version": "0.2.0",
   "description": "Performance Monitor",
   "license": "MIT",
   "author": {
@@ -25,17 +25,18 @@
     "url": "https://github.com/localvoid/perf-monitor/issues"
   },
   "github": "https://github.com/localvoid/perf-monitor",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
   "dependencies": {},
   "devDependencies": {
-    "babel": "^6.5.2",
-    "babel-preset-es2015-rollup": "^1.1.1",
-    "del": "^2.2.0",
+    "del": "^2.2.1",
     "gulp": "^3.9.1",
-    "gulp-gh-pages": "^0.5.4",
-    "gulp-typescript": "^2.13.0",
+    "gulp-typescript": "^2.13.6",
     "merge2": "^1.0.2",
-    "rollup": "^0.26.1",
-    "rollup-plugin-babel": "^2.4.0",
-    "typescript": "^1.8.10"
+    "rollup": "^0.34.1",
+    "typescript": "^2.0.0"
   }
 }

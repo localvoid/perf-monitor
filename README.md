@@ -10,7 +10,7 @@ Performance monitor. Simple UI component that helps you measure performance.
   <title>perf monitor example</title>
 </head>
 <body>
-  <script src="http://localvoid.github.io/perf-monitor/0.1/perf-monitor.js"></script>
+  <script src="https://npmcdn.com/perf-monitor@^0.2/dist/umd/perf-monitor.js"></script>
   <script>
     // initProfiler will create a new monitor component and inject it into your
     // document.
@@ -48,36 +48,42 @@ Performance monitor. Simple UI component that helps you measure performance.
 
 ## NPM Package
 
-Npm package `perf-monitor` provides standard commonjs module, es6 modules at
-`jsnext:main` and TypeScript typings.
+Npm package `perf-monitor` provides umd module, es6 modules at `jsnext:main` and TypeScript typings.
 
 ## API
 
-#### `initPerfMonitor(options: PerfMonitorOptions) : void`
+#### `initPerfMonitor(options: PerfMonitorOptions)`
 
-Initialize performance monitor. If perf monitor isn't initialized with this
-function, it will use default options.
+Initialize performance monitor. If perf monitor isn't initialized with this function, it will use default options.
 
 Options:
 
- - `container: HTMLElement` set container
+ - `container: HTMLElement`
 
-#### `startFPSMonitor() : void`
+#### `startFPSMonitor()`
 
 Add FPS monitor.
 
-#### `startMemMonitor() : void`
+#### `startMemMonitor()`
 
-Add Memory Monitor if browser supports `window.performance.memory`.
+Add Memory Monitor if browser has `window.performance.memory` object.
 
-#### `initProfiler(name: string) : void`
+#### `initProfiler(name: string)`
 
-Add new code profiler monitor.
+Add code profiler monitor.
 
-#### `startProfile(name: string) : void`
+#### `initCounter(name: string, interval?: number)`
+
+Add counter. Optional `interval` parameter sets sliding window interval.
+
+#### `startProfile(name: string)`
 
 Save start time of the profiled code.
 
-#### `endProfile(name: string) : void`
+#### `endProfile(name: string)`
 
 Measure time between the start of the profiled code and the current time.
+
+#### `count(name: string)`
+
+Increments counter.
