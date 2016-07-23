@@ -25,6 +25,16 @@ export class BasicCounter implements Counter {
   }
 }
 
+class Timestamp {
+  value: number;
+  next: Timestamp | null;
+
+  constructor(value: number) {
+    this.value = value;
+    this.next = null;
+  }
+}
+
 /**
  * Sliding Counter counts how many times `inc` method were called during `interval` period.
  */
@@ -32,36 +42,45 @@ export class SlidingCounter implements Counter {
   readonly interval: number;
   value: number;
   onChange: (() => void) | null;
-  private _timestamps: number[];
+  private _firstTimestamp: Timestamp | null;
+  private _lastTimestamp: Timestamp | null;
 
   constructor(interval: number) {
     this.interval = interval;
     this.value = 0;
     this.onChange = null;
-    this._timestamps = [];
+    this._firstTimestamp = null;
+    this._lastTimestamp = null;
   }
 
   inc() {
-    if (this.value === 0) {
+    const timestamp = new Timestamp(performance.now() + this.interval);
+    if (this._firstTimestamp === null) {
+      this._firstTimestamp = timestamp;
       setTimeout(this._dec, this.interval);
+    } else {
+      this._lastTimestamp!.next = timestamp;
     }
+    this._lastTimestamp = timestamp;
     this.value++;
-    this._timestamps.push(performance.now() + this.interval);
     this.onChange!();
   }
 
   _dec = () => {
     const now = performance.now();
 
-    while (this.value > 0) {
-      const nextTimestamp = this._timestamps[0];
-      if (now >= nextTimestamp) {
+    while (this._firstTimestamp !== null) {
+      const nextTimestamp = this._firstTimestamp;
+      if (now >= nextTimestamp.value) {
         this.value--;
-        this._timestamps.shift();
+        this._firstTimestamp = this._firstTimestamp.next;
       } else {
-        setTimeout(this._dec, Math.ceil(nextTimestamp - now));
+        setTimeout(this._dec, Math.ceil(nextTimestamp.value - now));
         break;
       }
+    }
+    if (this._firstTimestamp === null) {
+      this._lastTimestamp = null;
     }
 
     this.onChange!();

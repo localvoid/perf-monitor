@@ -9,11 +9,15 @@
     perfMonitor.initCounter('a');
     perfMonitor.initCounter('b', 1000);
 
+    var i = 0;
     function tick() {
       perfMonitor.count('a');
       perfMonitor.count('b');
 
-      setTimeout(tick, 30);
+      if (i < 2000) {
+        i += 100;
+      }
+      setTimeout(tick, 30 + i);
     }
 
     setTimeout(tick, 30);
