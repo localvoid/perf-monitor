@@ -1,3 +1,5 @@
+export const MonitorMaxSamples = 100;
+
 export class MonitorSamplesResult {
   readonly min: number;
   readonly max: number;

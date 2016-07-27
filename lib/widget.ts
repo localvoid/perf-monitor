@@ -1,6 +1,5 @@
 import { scheduleNextFrameTask } from "./scheduler";
-import { MonitorMaxSamples } from "./constants";
-import { MonitorSamples } from "./samples";
+import { MonitorMaxSamples, MonitorSamples } from "./samples";
 import { Counter } from "./counter";
 
 const MonitorGraphHeight = 30;

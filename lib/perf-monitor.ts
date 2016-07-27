@@ -1,5 +1,4 @@
-import { MonitorMaxSamples, FPSSamples } from "./constants";
-import { MonitorSamples } from "./samples";
+import { MonitorMaxSamples, MonitorSamples } from "./samples";
 import { Counter, BasicCounter, SlidingCounter } from "./counter";
 import { MonitorWidget, MonitorWidgetFlags, CounterWidget } from "./widget";
 
@@ -70,26 +69,17 @@ export function startFPSMonitor(): void {
     data);
   container!.appendChild(w.element);
 
-  const samples: number[] = [];
-  let idx = -1;
+  const alpha = 2 / 121;
   let last = 0;
+  let fps = 60;
 
   function update(now: number) {
-    const elapsed = (now - ((last === 0) ? now : last)) / 1000;
-    const fps = 1 / elapsed;
-    if (fps !== Infinity) {
-      idx = (idx + 1) % FPSSamples;
-      samples[idx] = fps;
-
-      let sum = 0;
-      for (let i = 0; i < samples.length; i++) {
-        sum += samples[(idx + i) % samples.length];
-      }
-      const mean = sum / samples.length;
-      data.addSample(mean);
-      w.invalidate();
+    if (last > 0) {
+      fps += alpha * ((1000 / (now - last)) - fps);
     }
     last = now;
+    data.addSample(fps);
+    w.invalidate();
     requestAnimationFrame(update);
   }
   requestAnimationFrame(update);

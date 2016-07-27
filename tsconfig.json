@@ -12,7 +12,6 @@
     "moduleResolution": "node"
   },
   "files": [
-    "lib/constants.ts",
     "lib/counter.ts",
     "lib/perf-monitor.ts",
     "lib/samples.ts",
