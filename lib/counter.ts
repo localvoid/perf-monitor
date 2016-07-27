@@ -3,7 +3,7 @@
  */
 export interface Counter {
   value: number;
-  inc(): void;
+  inc(value: number): void;
   onChange: (() => void) | null;
 }
 
@@ -19,17 +19,20 @@ export class BasicCounter implements Counter {
     this.onChange = null;
   }
 
-  inc() {
-    this.value++;
-    this.onChange!();
+  inc(value: number) {
+    if (value > 0) {
+      this.value += value;
+      this.onChange!();
+    }
   }
 }
 
-class Timestamp {
+class TimestampedValue {
+  timestamp: number;
   value: number;
-  next: Timestamp | null;
+  next: TimestampedValue | null;
 
-  constructor(value: number) {
+  constructor(timestamp: number, value: number) {
     this.value = value;
     this.next = null;
   }
@@ -42,8 +45,8 @@ export class SlidingCounter implements Counter {
   readonly interval: number;
   value: number;
   onChange: (() => void) | null;
-  private _firstTimestamp: Timestamp | null;
-  private _lastTimestamp: Timestamp | null;
+  private _firstTimestamp: TimestampedValue | null;
+  private _lastTimestamp: TimestampedValue | null;
 
   constructor(interval: number) {
     this.interval = interval;
@@ -53,17 +56,19 @@ export class SlidingCounter implements Counter {
     this._lastTimestamp = null;
   }
 
-  inc() {
-    const timestamp = new Timestamp(performance.now() + this.interval);
-    if (this._firstTimestamp === null) {
-      this._firstTimestamp = timestamp;
-      setTimeout(this._dec, this.interval);
-    } else {
-      this._lastTimestamp!.next = timestamp;
+  inc(value: number) {
+    if (value > 0) {
+      const timestamp = new TimestampedValue(performance.now() + this.interval, value);
+      if (this._firstTimestamp === null) {
+        this._firstTimestamp = timestamp;
+        setTimeout(this._dec, this.interval);
+      } else {
+        this._lastTimestamp!.next = timestamp;
+      }
+      this._lastTimestamp = timestamp;
+      this.value += value;
+      this.onChange!();
     }
-    this._lastTimestamp = timestamp;
-    this.value++;
-    this.onChange!();
   }
 
   _dec = () => {
@@ -72,7 +77,7 @@ export class SlidingCounter implements Counter {
     while (this._firstTimestamp !== null) {
       const nextTimestamp = this._firstTimestamp;
       if (now >= nextTimestamp.value) {
-        this.value--;
+        this.value -= nextTimestamp.value;
         this._firstTimestamp = this._firstTimestamp.next;
       } else {
         setTimeout(this._dec, Math.ceil(nextTimestamp.value - now));

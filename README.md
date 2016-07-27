@@ -84,6 +84,6 @@ Save start time of the profiled code.
 
 Measure time between the start of the profiled code and the current time.
 
-#### `count(name: string)`
+#### `count(name: string, value = 1)`
 
 Increments counter.

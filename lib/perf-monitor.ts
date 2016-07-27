@@ -185,9 +185,9 @@ export function endProfile(name: string): void {
   }
 }
 
-export function count(name: string): void {
+export function count(name: string, value = 1): void {
   const counter = counterInstances[name];
   if (counter !== void 0) {
-    counter.data.inc();
+    counter.data.inc(value);
   }
 }

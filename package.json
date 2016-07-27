@@ -3,7 +3,7 @@
   "main": "dist/umd/perf-monitor.js",
   "jsnext:main": "dist/es6/perf-monitor.js",
   "typings": "dist/typings/perf-monitor.d.ts",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Performance Monitor",
   "license": "MIT",
   "author": {
