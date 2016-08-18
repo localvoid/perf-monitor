@@ -48,7 +48,7 @@ Performance monitor. Simple UI component that helps you measure performance.
 
 ## NPM Package
 
-Npm package `perf-monitor` provides umd module, es6 modules at `jsnext:main` and TypeScript typings.
+Npm package `perf-monitor` provides umd module, es6 module and TypeScript typings.
 
 ## API
 
