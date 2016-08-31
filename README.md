@@ -10,7 +10,7 @@ Performance monitor. Simple UI component that helps you measure performance.
   <title>perf monitor example</title>
 </head>
 <body>
-  <script src="https://npmcdn.com/perf-monitor@^0.2/dist/umd/perf-monitor.js"></script>
+  <script src="https://unpkg.com/perf-monitor@^0.2/dist/umd/perf-monitor.js"></script>
   <script>
     // initProfiler will create a new monitor component and inject it into your
     // document.
