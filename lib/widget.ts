@@ -40,7 +40,7 @@ export abstract class Widget {
   }
 }
 
-export const enum MonitorWidgetFlags {
+export enum MonitorWidgetFlags {
   HideMin     = 1,
   HideMax     = 1 << 1,
   HideMean    = 1 << 2,

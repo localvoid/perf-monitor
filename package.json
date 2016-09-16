@@ -4,7 +4,7 @@
   "jsnext:main": "dist/es6/perf-monitor.js",
   "module": "dist/es6/perf-monitor.js",
   "typings": "dist/typings/perf-monitor.d.ts",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Performance Monitor",
   "license": "MIT",
   "author": {

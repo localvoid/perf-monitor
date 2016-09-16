@@ -10,7 +10,7 @@ Performance monitor. Simple UI component that helps you measure performance.
   <title>perf monitor example</title>
 </head>
 <body>
-  <script src="https://unpkg.com/perf-monitor@^0.2/dist/umd/perf-monitor.js"></script>
+  <script src="https://unpkg.com/perf-monitor@^0.3/dist/umd/perf-monitor.js"></script>
   <script>
     // initProfiler will create a new monitor component and inject it into your
     // document.
@@ -60,15 +60,15 @@ Options:
 
  - `container: HTMLElement`
 
-#### `startFPSMonitor()`
+#### `startFPSMonitor(flags?: number)`
 
 Add FPS monitor.
 
-#### `startMemMonitor()`
+#### `startMemMonitor(flags?: number)`
 
 Add Memory Monitor if browser has `window.performance.memory` object.
 
-#### `initProfiler(name: string)`
+#### `initProfiler(name: string, flags = 0)`
 
 Add code profiler monitor.
 
@@ -87,3 +87,16 @@ Measure time between the start of the profiled code and the current time.
 #### `count(name: string, value = 1)`
 
 Increments counter.
+
+#### `MonitorWidgetFlags`
+
+```ts
+enum MonitorWidgetFlags {
+  HideMin     = 1,
+  HideMax     = 1 << 1,
+  HideMean    = 1 << 2,
+  HideLast    = 1 << 3,
+  HideGraph   = 1 << 4,
+  RoundValues = 1 << 5,
+}
+```

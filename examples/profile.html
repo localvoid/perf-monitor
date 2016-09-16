@@ -9,7 +9,9 @@
     // initProfiler will create a new monitor component and inject it into your
     // document.
     perfMonitor.initProfiler('a');
-    perfMonitor.initProfiler('b');
+    perfMonitor.initProfiler('b', perfMonitor.MonitorWidgetFlags.HideMin |
+                                  perfMonitor.MonitorWidgetFlags.HideMax |
+                                  perfMonitor.MonitorWidgetFlags.HideLast);
 
     function tick() {
       // save start time of the profiled code

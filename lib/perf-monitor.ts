@@ -2,6 +2,8 @@ import { MonitorMaxSamples, MonitorSamples } from "./samples";
 import { Counter, BasicCounter, SlidingCounter } from "./counter";
 import { MonitorWidget, MonitorWidgetFlags, CounterWidget } from "./widget";
 
+export { MonitorWidgetFlags } from "./widget";
+
 export interface MemoryPerformance {
   totalJSHeapSize: number;
   usedJSHeapSize: number;
@@ -57,14 +59,14 @@ function checkInit(): void {
 /**
  * Start FPS monitor
  */
-export function startFPSMonitor(): void {
+export function startFPSMonitor(flags = MonitorWidgetFlags.HideMin | MonitorWidgetFlags.HideMax |
+    MonitorWidgetFlags.HideMean | MonitorWidgetFlags.RoundValues): void {
   checkInit();
 
   const data = new MonitorSamples(MonitorMaxSamples);
   const w = new MonitorWidget(
     "FPS",
-    MonitorWidgetFlags.HideMin | MonitorWidgetFlags.HideMax | MonitorWidgetFlags.HideMean |
-    MonitorWidgetFlags.RoundValues,
+    flags,
     "",
     data);
   container!.appendChild(w.element);
@@ -88,14 +90,14 @@ export function startFPSMonitor(): void {
 /**
  * Start Memory Monitor
  */
-export function startMemMonitor(): void {
+export function startMemMonitor(flags = MonitorWidgetFlags.HideMin | MonitorWidgetFlags.HideMean): void {
   checkInit();
   if (performance.memory === undefined) {
     return;
   }
 
   const data = new MonitorSamples(MonitorMaxSamples);
-  const w = new MonitorWidget("Memory", MonitorWidgetFlags.HideMin | MonitorWidgetFlags.HideMean, "MB", data);
+  const w = new MonitorWidget("Memory", flags, "MB", data);
   container!.appendChild(w.element);
 
   function update() {
@@ -111,9 +113,9 @@ class ProfilerDetails {
   widget: MonitorWidget;
   startTime: number;
 
-  constructor(name: string, unitName: string) {
+  constructor(name: string, unitName: string, flags: number) {
     this.data = new MonitorSamples(MonitorMaxSamples);
-    this.widget = new MonitorWidget(name, 0, unitName, this.data);
+    this.widget = new MonitorWidget(name, flags, unitName, this.data);
     this.startTime = -1;
   }
 }
@@ -146,12 +148,12 @@ const counterInstances: CounterDetailsMap = {};
 /**
  * Initialize profiler and insert into container.
  */
-export function initProfiler(name: string): void {
+export function initProfiler(name: string, flags = 0): void {
   checkInit();
 
   let profiler = profilerInstances[name];
   if (profiler === void 0) {
-    profilerInstances[name] = profiler = new ProfilerDetails(name, "ms");
+    profilerInstances[name] = profiler = new ProfilerDetails(name, "ms", flags);
     container!.appendChild(profiler.widget.element);
   }
 }
