@@ -8,7 +8,7 @@ const rollup = require("rollup");
 
 gulp.task("clean", del.bind(null, ["build", "dist"]));
 
-gulp.task("build:es5", function() {
+gulp.task("build:es5", function () {
   return gulp.src(["lib/**/*.ts"])
     .pipe(gulpTs(Object.assign(tsConfig.compilerOptions, {
       typescript: typescript,
@@ -19,7 +19,7 @@ gulp.task("build:es5", function() {
 
 });
 
-gulp.task("build:es6", function() {
+gulp.task("build:es6", function () {
   const result = gulp.src(["lib/**/*.ts"])
     .pipe(gulpTs(Object.assign(tsConfig.compilerOptions, {
       typescript: typescript,
@@ -33,7 +33,7 @@ gulp.task("build:es6", function() {
   ]);
 });
 
-gulp.task("dist:umd", ["build:es5"], function() {
+gulp.task("dist:umd", ["build:es5"], function () {
   return rollup.rollup({
     entry: "build/es5/perf-monitor.js",
   }).then((bundle) => bundle.write({
@@ -43,7 +43,16 @@ gulp.task("dist:umd", ["build:es5"], function() {
   }));
 })
 
-gulp.task("dist:es6", ["build:es6"], function() {
+gulp.task("dist:es5", ["build:es5"], function () {
+  return rollup.rollup({
+    entry: "build/es5/perf-monitor.js",
+  }).then((bundle) => bundle.write({
+    format: "es",
+    dest: "dist/es5/perf-monitor.js",
+  }));
+})
+
+gulp.task("dist:es6", ["build:es6"], function () {
   return rollup.rollup({
     entry: "build/es6/perf-monitor.js",
   }).then((bundle) => bundle.write({
@@ -52,4 +61,4 @@ gulp.task("dist:es6", ["build:es6"], function() {
   }));
 })
 
-gulp.task("dist", ["dist:umd", "dist:es6"]);
+gulp.task("dist", ["dist:umd", "dist:es5", "dist:es6"]);
