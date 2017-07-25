@@ -193,3 +193,17 @@ export function count(name: string, value = 1): void {
     counter.data.inc(value);
   }
 }
+/**
+ * lookup a profile by name
+ * @param name the name of the profile to lookup
+ */
+export function getProfile(name: string): ProfilerDetails|null {
+  return profilerInstances[name];
+}
+/**
+ * lookup a counter by name
+ * @param name the name of the counter to lookup
+ */
+export function getCounter(name: string): CounterDetails|null {
+  return counterInstances[name];
+}
