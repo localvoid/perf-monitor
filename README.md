@@ -60,15 +60,15 @@ Options:
 
  - `container: HTMLElement`
 
-#### `startFPSMonitor(flags?: number)`
+#### `startFPSMonitor(flags?: MonitorWidgetFlags)`
 
 Add FPS monitor.
 
-#### `startMemMonitor(flags?: number)`
+#### `startMemMonitor(flags?: MonitorWidgetFlags)`
 
 Add Memory Monitor if browser has `window.performance.memory` object.
 
-#### `initProfiler(name: string, flags = 0)`
+#### `initProfiler(name: string, flags: MonitorWidgetFlags = 0)`
 
 Add code profiler monitor.
 
@@ -100,3 +100,47 @@ enum MonitorWidgetFlags {
   RoundValues = 1 << 5,
 }
 ```
+
+#### `MonitorSamples`
+
+```ts
+interface MonitorSamples {
+  readonly samples: number[];
+  readonly maxSamples: number;
+}
+```
+
+#### `ProfilerDetails`
+
+```ts
+interface ProfilerDetails {
+  data: MonitorSamples;
+  widget: MonitorWidget;
+  startTime: number;
+}
+```
+
+#### `Counter`
+
+```ts
+interface Counter {
+  value: number;
+}
+```
+
+#### `CounterDetails`
+
+```ts
+interface CounterDetails {
+  data: Counter;
+  widget: CounterWidget;
+}
+```
+
+### `getProfile(name: string): ProfilerDetails | null`
+
+Lookup a profile by name
+
+### `getCounter(name: string): CounterDetails | null`
+
+Lookup a counter by name

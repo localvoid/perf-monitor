@@ -4,7 +4,7 @@
   "module": "dist/es5/perf-monitor.js",
   "es2015": "dist/es6/perf-monitor.js",
   "typings": "dist/typings/perf-monitor.d.ts",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "Performance Monitor",
   "license": "MIT",
   "author": {
@@ -31,6 +31,9 @@
     "README.md",
     "LICENSE"
   ],
+  "scripts": {
+    "dist": "gulp dist"
+  },
   "dependencies": {},
   "devDependencies": {
     "del": "^2.2.2",

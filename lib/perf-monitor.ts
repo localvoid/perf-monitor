@@ -1,8 +1,10 @@
+export { MonitorSamplesResult, MonitorMaxSamples, MonitorSamples } from "./samples";
+export { Counter, BasicCounter, SlidingCounter } from "./counter";
+export { Widget, MonitorWidgetFlags, MonitorWidget, CounterWidget } from "./widget";
+
 import { MonitorMaxSamples, MonitorSamples } from "./samples";
 import { Counter, BasicCounter, SlidingCounter } from "./counter";
 import { MonitorWidget, MonitorWidgetFlags, CounterWidget } from "./widget";
-
-export { MonitorWidgetFlags } from "./widget";
 
 export interface MemoryPerformance {
   totalJSHeapSize: number;
@@ -48,9 +50,9 @@ function checkInit(): void {
   if (!container) {
     container = document.createElement("div");
     container.style.cssText = "position: fixed;" +
-                              "opacity: 0.9;" +
-                              "right: 0;" +
-                              "bottom: 0";
+      "opacity: 0.9;" +
+      "right: 0;" +
+      "bottom: 0";
     document.body.appendChild(container);
   }
   initialized = true;
@@ -60,7 +62,7 @@ function checkInit(): void {
  * Start FPS monitor
  */
 export function startFPSMonitor(flags = MonitorWidgetFlags.HideMin | MonitorWidgetFlags.HideMax |
-    MonitorWidgetFlags.HideMean | MonitorWidgetFlags.RoundValues): void {
+  MonitorWidgetFlags.HideMean | MonitorWidgetFlags.RoundValues): void {
   checkInit();
 
   const data = new MonitorSamples(MonitorMaxSamples);
@@ -108,7 +110,7 @@ export function startMemMonitor(flags = MonitorWidgetFlags.HideMin | MonitorWidg
   update();
 }
 
-class ProfilerDetails {
+export class ProfilerDetails {
   data: MonitorSamples;
   widget: MonitorWidget;
   startTime: number;
@@ -126,7 +128,7 @@ interface ProfilerDetailsMap {
 
 const profilerInstances: ProfilerDetailsMap = {};
 
-class CounterDetails {
+export class CounterDetails {
   data: Counter;
   widget: CounterWidget;
 
@@ -197,13 +199,13 @@ export function count(name: string, value = 1): void {
  * lookup a profile by name
  * @param name the name of the profile to lookup
  */
-export function getProfile(name: string): ProfilerDetails|null {
+export function getProfile(name: string): ProfilerDetails | null {
   return profilerInstances[name];
 }
 /**
  * lookup a counter by name
  * @param name the name of the counter to lookup
  */
-export function getCounter(name: string): CounterDetails|null {
+export function getCounter(name: string): CounterDetails | null {
   return counterInstances[name];
 }
