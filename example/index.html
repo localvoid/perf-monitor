@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>perf-monitor example</title>
+  <script src="../dist/component.js" type="module"></script>
+  <script type="module">
+    import { ema, emaAdd } from "../dist/index.js";
+
+    const testEMA = ema(1 / 60, "test");
+
+    function tick() {
+      let t0 = performance.now();
+      for (let i = 0; i < 100000; i++) {
+        Math.random();
+      }
+      emaAdd(testEMA, performance.now() - t0);
+      setTimeout(tick, 30);
+    }
+    tick();
+  </script>
+</head>
+
+<body>
+  <perf-monitor fps mem></perf-monitor>
+</body>
+
+</html>

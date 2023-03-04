@@ -1,146 +1,97 @@
-Performance monitor. Simple UI component that helps you measure performance.
-[Demo](http://localvoid.github.io/kivi-dbmonster/)
+# Performance Monitor
+
+## API
+
+```ts
+interface ExponentialMovingAverage {
+  readonly alpha: number;
+  avg: number;
+  std: number;
+  var: number;
+  min: number;
+}
+
+// Creates an exponential moving average bucket.
+function ema(alpha: number = 1 / 60, name?: string): ExponentialMovingAverage;
+// Adds a sample to an exponential moving average bucket.
+function emaAdd(ema: ExponentialMovingAverage, value: number): void;
+```
+
+### `<perf-monitor>` Attributes
+
+- `fps` - enables FPS monitor
+- `mem` - enables Mem monitor [`performance.memory`](https://developer.mozilla.org/en-US/docs/Web/API/Performance/memory)
 
 ## Example
 
 ```html
 <!doctype html>
 <html>
+
 <head>
-  <title>perf monitor example</title>
-</head>
-<body>
-  <script src="https://unpkg.com/perf-monitor@^0.3/dist/umd/perf-monitor.js"></script>
-  <script>
-    // initProfiler will create a new monitor component and inject it into your
-    // document.
-    perfMonitor.initProfiler('a');
-    perfMonitor.initProfiler('b');
+  <title>perf-monitor example</title>
+  <script src="https://cdn.jsdelivr.net/npm/perf-monitor@0.5.0/dist/component.js" type="module"></script>
+  <script type="module">
+    import {
+      ema, emaAdd,
+    } from "https://cdn.jsdelivr.net/npm/perf-monitor@0.5.0/dist/index.js";
+
+    const testEMA = ema(1 / 60, "test");
 
     function tick() {
-      // save start time of the profiled code
-      perfMonitor.startProfile('a');
-      let a = Math.random();
-      for (let i = 0; i < 100; i++) {
-        a += Math.random();
+      let t0 = performance.now();
+      for (let i = 0; i < 100000; i++) {
+        Math.random();
       }
-      // measure time between the start of the profiled code and the current time
-      perfMonitor.endProfile('a');
-
-      perfMonitor.startProfile('b');
-      let b = Math.random();
-      for (let i = 0; i < 100; i++) {
-        b *= Math.random();
-      }
-      perfMonitor.endProfile('b');
-
-      console.log(a);
-      console.log(b);
-
+      emaAdd(testEMA, performance.now() - t0);
       setTimeout(tick, 30);
     }
-
-    setTimeout(tick, 30);
+    tick();
   </script>
+</head>
+
+<body>
+  <perf-monitor fps mem></perf-monitor>
 </body>
+
 </html>
 ```
 
-## NPM Package
+## Enabling High-Resolution Timers with Better Precision
 
-Npm package `perf-monitor` provides umd module, es6 module and TypeScript typings.
+- https://developer.chrome.com/blog/cross-origin-isolated-hr-timers/
+- https://web.dev/coop-coep/
 
-## API
+Install HTTP server that supports custom headers, e.g. [serve](https://npmjs.com/package/serve).
 
-#### `initPerfMonitor(options: PerfMonitorOptions)`
+```sh
+npm -g install serve
+```
 
-Initialize performance monitor. If perf monitor isn't initialized with this function, it will use default options.
+Add COEP and COOP headers to `serve.json` config.
 
-Options:
-
- - `container: HTMLElement`
-
-#### `startFPSMonitor(flags?: MonitorWidgetFlags)`
-
-Add FPS monitor.
-
-#### `startMemMonitor(flags?: MonitorWidgetFlags)`
-
-Add Memory Monitor if browser has `window.performance.memory` object.
-
-#### `initProfiler(name: string, flags: MonitorWidgetFlags = 0)`
-
-Add code profiler monitor.
-
-#### `initCounter(name: string, interval?: number)`
-
-Add counter. Optional `interval` parameter sets sliding window interval.
-
-#### `startProfile(name: string)`
-
-Save start time of the profiled code.
-
-#### `endProfile(name: string)`
-
-Measure time between the start of the profiled code and the current time.
-
-#### `count(name: string, value = 1)`
-
-Increments counter.
-
-#### `MonitorWidgetFlags`
-
-```ts
-enum MonitorWidgetFlags {
-  HideMin     = 1,
-  HideMax     = 1 << 1,
-  HideMean    = 1 << 2,
-  HideLast    = 1 << 3,
-  HideGraph   = 1 << 4,
-  RoundValues = 1 << 5,
+```json
+{
+  "headers": [
+    {
+      "source": "**/*.html",
+      "headers": [
+        {
+          "key": "Cross-Origin-Embedder-Policy",
+          "value": "require-corp"
+        },
+        {
+          "key": "Cross-Origin-Opener-Policy",
+          "value": "same-origin"
+        }
+      ]
+    }
+  ]
 }
 ```
 
-#### `MonitorSamples`
+Start HTTP server.
 
-```ts
-interface MonitorSamples {
-  readonly samples: number[];
-  readonly maxSamples: number;
-}
+```sh
+serve
 ```
-
-#### `ProfilerDetails`
-
-```ts
-interface ProfilerDetails {
-  data: MonitorSamples;
-  widget: MonitorWidget;
-  startTime: number;
-}
-```
-
-#### `Counter`
-
-```ts
-interface Counter {
-  value: number;
-}
-```
-
-#### `CounterDetails`
-
-```ts
-interface CounterDetails {
-  data: Counter;
-  widget: CounterWidget;
-}
-```
-
-### `getProfile(name: string): ProfilerDetails | null`
-
-Lookup a profile by name
-
-### `getCounter(name: string): CounterDetails | null`
-
-Lookup a counter by name
