@@ -1,10 +1,10 @@
 {
   "name": "perf-monitor",
   "type": "module",
-  "version": "0.5.0",
+  "version": "0.5.2",
   "exports": {
-    ".": "./index.js",
-    "./component": "./component.js"
+    ".": "./dist/index.js",
+    "./component": "./dist/component.js"
   },
   "files": [
     "dist",

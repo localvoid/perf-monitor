@@ -83,7 +83,7 @@ export class PerfMonitor extends HTMLElement {
     const showFPS = this.getAttribute("fps") !== null;
     const showMem = this.getAttribute("mem") !== null && perf.memory;
     const common = doc.createElement("div");
-    common.append(`CORS Isolation: ${corsIsolated}`);
+    common.append(createField(`CORS Isolation: ${corsIsolated}`));
     if (showFPS || showMem) {
       common.className = "common";
       if (showFPS) {
