@@ -1,4 +1,4 @@
-import type { ExponentialMovingAverage } from "./index.js";
+import type { Bucket } from "./index.js";
 
 interface MemoryPerformance {
   totalJSHeapSize: number;
@@ -21,9 +21,9 @@ const corsIsolated = window.crossOriginIsolated;
 const rAF = requestAnimationFrame;
 const perf = performance;
 const doc = document;
-const REGISTRY_KEY = Symbol.for("perf-monitor");
 
 interface Entry {
+  readonly bucket: Bucket;
   readonly root: HTMLDivElement;
   readonly avg: Text;
   readonly std: Text;
@@ -71,7 +71,7 @@ export class PerfMonitor extends HTMLElement {
 }
 </style>`;
 
-    this.update = this.update.bind(this);
+    this._update = this._update.bind(this);
     this.entries = new Map();
     this.container = null;
     this.fpsText = null;
@@ -101,10 +101,24 @@ export class PerfMonitor extends HTMLElement {
     }
     root.appendChild(common);
 
-    rAF(this.update);
+    rAF(this._update);
   }
 
-  update(now: number) {
+  observe(name: string, bucket: Bucket) {
+    if (this.entries.has(name)) {
+      throw Error(`duplicate bucket name '${name}'`);
+    }
+    const entry = createEntry(name, bucket);
+    if (!this.container) {
+      this.container = doc.createElement("div");
+      this.container.className = "entries";
+      this._root.appendChild(this.container);
+    }
+    this.container.appendChild(entry.root);
+    this.entries.set(name, entry);
+  }
+
+  _update(now: number) {
     if (this.fpsText) {
       this.fps += (2 / 121) * ((1000 / (now - this.tPrev)) - this.fps);
       this.tPrev = now;
@@ -119,27 +133,14 @@ export class PerfMonitor extends HTMLElement {
       this.memUsedText.nodeValue = (mem.usedJSHeapSize / Const.MB).toFixed(3);
     }
 
-    const registry: Map<string, ExponentialMovingAverage> = (globalThis as any)[REGISTRY_KEY];
-    if (registry) {
-      registry.forEach((stats, key) => {
-        let entry = this.entries.get(key);
-        if (!entry) {
-          entry = createEntry(key);
-          if (!this.container) {
-            this.container = doc.createElement("div");
-            this.container.className = "entries";
-            this._root.appendChild(this.container);
-          }
-          this.container.appendChild(entry.root);
-          this.entries.set(key, entry);
-        }
-        entry.avg.nodeValue = stats.avg.toFixed(4);
-        entry.std.nodeValue = stats.std.toFixed(4);
-        entry.min.nodeValue = stats.min.toFixed(4);
-      });
+    for (const entry of this.entries.values()) {
+      const bucket = entry.bucket;
+      entry.avg.nodeValue = bucket.avg.toFixed(4);
+      entry.std.nodeValue = bucket.std.toFixed(4);
+      entry.min.nodeValue = bucket.min.toFixed(4);
     }
 
-    rAF(this.update);
+    rAF(this._update);
   }
 }
 
@@ -152,7 +153,7 @@ function createField(label: string): Element {
   return e;
 }
 
-function createEntry(label: string): Entry {
+function createEntry(label: string, bucket: Bucket): Entry {
   const root = doc.createElement("div");
   const name = doc.createElement("div");
   const avgField = createField("avg: ");
@@ -164,6 +165,7 @@ function createEntry(label: string): Entry {
   root.append(name, avgField, stdField, minField);
 
   return {
+    bucket,
     root,
     avg: avgField.lastChild as Text,
     std: stdField.lastChild as Text,

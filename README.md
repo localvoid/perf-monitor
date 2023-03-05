@@ -2,8 +2,21 @@
 
 ## API
 
+### `perf-monitor` module.
+
 ```ts
+type Bucket = ExponentialMovingAverage;
+
+/**
+ * Exponential Moving Average.
+ *
+ * The EMA is a moving average that places a greater weight and significance on
+ * the most recent data points.
+ *
+ * {@link https://www.investopedia.com/terms/e/ema.asp}
+ */
 interface ExponentialMovingAverage {
+  readonly type: "ema";
   readonly alpha: number;
   avg: number;
   std: number;
@@ -12,12 +25,19 @@ interface ExponentialMovingAverage {
 }
 
 // Creates an exponential moving average bucket.
-function ema(alpha: number = 1 / 60, name?: string): ExponentialMovingAverage;
+function ema(alpha: number = 1 / 60): ExponentialMovingAverage;
 // Adds a sample to an exponential moving average bucket.
-function emaAdd(ema: ExponentialMovingAverage, value: number): void;
+function emaPush(ema: ExponentialMovingAverage, value: number): void;
 ```
 
-### `<perf-monitor>` Attributes
+### `perf-monitor/component`
+
+```ts
+class PerfMonitor extends HTMLElement {
+  observe(name: string, bucket: Bucket): void;
+}
+```
+#### `<perf-monitor>` Attributes
 
 - `fps` - enables FPS monitor
 - `mem` - enables Mem monitor [`performance.memory`](https://developer.mozilla.org/en-US/docs/Web/API/Performance/memory)
@@ -30,20 +50,21 @@ function emaAdd(ema: ExponentialMovingAverage, value: number): void;
 
 <head>
   <title>perf-monitor example</title>
-  <script src="https://cdn.jsdelivr.net/npm/perf-monitor@0.5.0/dist/component.js" type="module"></script>
+  <script src="https://cdn.jsdelivr.net/npm/perf-monitor@0.6.0/dist/component.js" type="module"></script>
   <script type="module">
     import {
-      ema, emaAdd,
-    } from "https://cdn.jsdelivr.net/npm/perf-monitor@0.5.0/dist/index.js";
+      ema, emaPush,
+    } from "https://cdn.jsdelivr.net/npm/perf-monitor@0.6.0/dist/index.js";
 
-    const testEMA = ema(1 / 60, "test");
+    const testEMA = ema();
+    document.querySelector("perf-monitor").observe("test", testEMA);
 
     function tick() {
       let t0 = performance.now();
       for (let i = 0; i < 100000; i++) {
         Math.random();
       }
-      emaAdd(testEMA, performance.now() - t0);
+      emaPush(testEMA, performance.now() - t0);
       setTimeout(tick, 30);
     }
     tick();
