@@ -1,7 +1,3 @@
-const enum DefaultValues {
-  EMAAlpha = 1 / 60,
-}
-
 /**
  * Exponential Moving Average.
  *
@@ -27,9 +23,7 @@ export type Bucket = ExponentialMovingAverage;
  * @param alpha Should have a range (0,1).
  * @returns {@link ExponentialMovingAverage} bucket.
  */
-export const ema = (
-  alpha: number = DefaultValues.EMAAlpha,
-): ExponentialMovingAverage => ({
+export const ema = (alpha: number = 1 / 60): ExponentialMovingAverage => ({
   type: "ema",
   alpha,
   avg: NaN,
